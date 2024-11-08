@@ -1,6 +1,6 @@
 resize
 
-stop
+
 
 erode
 find_contours
@@ -10,3 +10,4 @@ threshold
 compute_iou
 compute_area_ratio
 roi_color
+stop

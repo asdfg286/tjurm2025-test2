@@ -46,6 +46,25 @@ std::vector<cv::Mat> erode(const cv::Mat& src_erode, const cv::Mat& src_dilate) 
     cv::Mat dst_erode, dst_dilate;
 
     // TODO: 在这里实现你的代码
+    cv::cvtColor(src_erode, dst_erode, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(src_dilate, dst_dilate, cv::COLOR_BGR2GRAY);
+
+    cv::threshold(dst_erode, dst_erode, 50, 255, cv::THRESH_BINARY);
+    cv::threshold(dst_dilate, dst_dilate, 50, 255, cv::THRESH_BINARY);
+
+    // 腐蚀操作
+    cv::erode(
+               dst_erode,        // 输入的二值图像
+               dst_erode,        // 输出的二值图像
+               cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7, 7)) // 腐蚀的核
+            
+           );
+    // 膨胀操作
+    cv::dilate(
+        dst_dilate,       // 输入的二值图像
+        dst_dilate,       // 输出的二值图像
+        cv::getStructuringElement(cv::MORPH_RECT, cv::Size(7,7)) // 膨胀的核
+    );
 
     return {dst_erode, dst_dilate};
 }

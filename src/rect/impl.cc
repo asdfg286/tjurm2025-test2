@@ -12,5 +12,27 @@ std::pair<cv::Rect, cv::RotatedRect> get_rect_by_contours(const cv::Mat& input) 
     */
     std::pair<cv::Rect, cv::RotatedRect> res;
     // IMPLEMENT YOUR CODE HERE
-    return res;
+    cv::Mat gray;
+    cv::cvtColor(input, gray, cv::COLOR_BGR2GRAY);
+    cv::GaussianBlur(gray, gray, cv::Size(5, 5), 0);
+
+    cv::Mat binary;
+    cv::threshold(gray, binary, 100, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(binary, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+    for (const auto& contour : contours) {
+        cv::Rect boundingRect = cv::boundingRect(contour);
+        cv::RotatedRect minAreaRect = cv::minAreaRect(contour);
+
+        // 检查轮廓是否为矩形（这里使用一个简单的方法，即检查矩形的长宽比）
+        double aspectRatio = std::max(boundingRect.width, boundingRect.height) / std::min(boundingRect.width, boundingRect.height);
+        if (aspectRatio >= 1 && aspectRatio <= 2) { // 调整这个比例以适应矩形的定义
+            return {boundingRect, minAreaRect};
+        }
+    }
+
+    // 如果没有找到矩形，返回空的矩形
+    return {cv::Rect(), cv::RotatedRect()};
 }
