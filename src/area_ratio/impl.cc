@@ -15,7 +15,10 @@ float compute_area_ratio(const std::vector<cv::Point>& contour) {
      */
     
     float area = contourArea(contour);
+    
     float minAreaRect = cv::minAreaRect(contour).size.area();
+    
     float ratio = area / minAreaRect;
+    
     return static_cast<float>(ratio); 
 }

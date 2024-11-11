@@ -1,7 +1,7 @@
 #include "impls.h"
 void findInnerContours(int idx, const std::vector<std::vector<cv::Point>>& contours, const std::vector<cv::Vec4i>& hierarchy, std::vector<std::vector<cv::Point>>& innerContours){
         if (idx < 0) return;
-        if (hierarchy[idx][2] == -1) { // 没有子轮廓，说明是最内层轮廓
+        if (hierarchy[idx][2] == -1) { 
             double area = cv::contourArea(contours[idx]);
             if (area > 10) {
                 innerContours.push_back(contours[idx]);
@@ -33,10 +33,10 @@ std::vector<std::vector<cv::Point>> find_contours(const cv::Mat& input) {
     // IMPLEMENT YOUR CODE HERE
     cv::Mat gray;
     cv::cvtColor(input, gray, cv::COLOR_BGR2GRAY);
-    cv::GaussianBlur(gray, gray, cv::Size(5, 5), 0);
+    
 
     cv::Mat binary;
-    cv::threshold(gray, binary, 100, 255, cv::THRESH_BINARY);
+    cv::threshold(gray, binary, 50, 255, cv::THRESH_BINARY);
     std::vector<cv::Vec4i> hierarchy;
     cv::findContours(binary, res, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
 
@@ -47,7 +47,7 @@ std::vector<std::vector<cv::Point>> find_contours(const cv::Mat& input) {
 
 
     for (int i = 0; i < hierarchy.size(); i++) {
-        if (hierarchy[i][3] == -1) { // 最外层轮廓
+        if (hierarchy[i][3] == -1) { 
             findInnerContours(i, res, hierarchy, innerContours);
         }
     }
